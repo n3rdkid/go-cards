@@ -3,12 +3,17 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"strings"
+	"time"
 )
 
 type deck []string
 
+/**
+Creates a new deck
+*/
 func newDeck() deck {
 	cards := deck{}
 
@@ -22,10 +27,18 @@ func newDeck() deck {
 	return cards
 }
 
+/**
+Deal cards from the deck
+@param deck : The deck from which we deal
+@param handSize: The no of cards to deal
+*/
 func deal(d deck, handSize int) (deck, deck) {
 	return d[:handSize], d[handSize:]
 }
 
+/**
+Prints the current cards in the deck
+*/
 func (d deck) print() {
 	for i, card := range d {
 		fmt.Println(i, card)
@@ -59,5 +72,17 @@ func newDeckFromFile(filename string) deck {
 	}
 	s := strings.Split(string(bs), ",")
 	return deck(s)
+}
 
+/**
+Shuffles the deck
+*/
+func (d deck) shuffle() {
+	source := rand.NewSource(time.Now().UnixNano())
+	r := rand.New(source)
+
+	for i := range d {
+		newPosition := r.Intn(len(d) - 1)
+		d[i], d[newPosition] = d[newPosition], d[i]
+	}
 }
